@@ -105,7 +105,7 @@ class Environment(object):
         entrypoints = stats['entrypoints']
         print('_resolve_stats: entrypoints: ', entrypoints)
 
-        return dict(map(self._transform_stats, entrypoints))
+        return {k: self._transform_stats(v) for (k, v) in entrypoints.items()}
 
 
     def load_manifest(self, filename):
