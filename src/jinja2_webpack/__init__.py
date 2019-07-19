@@ -119,6 +119,7 @@ class Environment(object):
     def load_stats(self, filename):
         stats = load_json(filename)
         self._stats = self._resolve_stats(stats)
+        print('load_stats: self._stats=', self._stats)
 
     def identify_assetspec(self, spec):
         """ Lookup an asset from the webpack manifest.
@@ -152,7 +153,8 @@ class Environment(object):
         self.settings.renderByExt[extension] = renderer
 
     def _select_renderer(self, asset):
-        name, ext = path.splitext(asset.filename)
+        print('_select_renderer: asset ', asset)
+        _, ext = path.splitext(asset.filename)
         return self.settings.renderByExt.get(
              ext, self.settings.defaultRenderer)
 
