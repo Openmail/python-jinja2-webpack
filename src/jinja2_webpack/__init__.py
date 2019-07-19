@@ -98,12 +98,16 @@ class Environment(object):
 
     def _transform_stats(self, entrypoint):
         print('_transform_stats: entrypoint: ', entrypoint)
-        return {k: v['assets'] for (k, v) in entrypoint.items()}
+        # entrypoint = {'chunks': [5], 'assets': ['autoversed.636eed0c.css', 'autoversed.9bf44627.bundle.js'], 'children': {}, 'childAssets': {}}
+        return entrypoint['assets']
 
 
     def _resolve_stats(self, stats):
         entrypoints = stats['entrypoints']
         print('_resolve_stats: entrypoints: ', entrypoints)
+
+        #        {'autoversed': 'assets': { ['stuff.js', 'things.js'] } }
+        # return {'autoversed': ['stuff.js', 'things.js']}
 
         return {k: self._transform_stats(v) for (k, v) in entrypoints.items()}
 
