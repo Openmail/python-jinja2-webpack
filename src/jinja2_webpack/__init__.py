@@ -96,7 +96,8 @@ class Environment(object):
 
         return result
 
-    def _transform_stats(self, entrypoint = {'scroll': {'assets': ['foo.js', 'bar.js']}}):
+    def _transform_stats(self, entrypoint):
+        print('_transform_stats: ', entrypoint)
         return {k: v['assets'] for (k, v) in entrypoint.items()}
 
 
