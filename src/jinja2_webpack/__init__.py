@@ -96,19 +96,15 @@ class Environment(object):
 
         return result
 
-    def _resolve_stats(self, stats):
-        result = {}
-        # Resolve URLs in original stats items
-        for name, asset in stats.items():
-            result[name] = self._resolve_asset(asset)
-        # Strip out the extension as well, so if the webpack output
-        # file is "commons.js" we can use {{ "commons" | webpack }}
-        for name, asset in stats.items():
-            basename, ext = path.splitext(name)
-            if basename not in result:
-                result[basename] = result[name]
+    def _transform_stats(self, entrypoint = {'scroll': {'assets': ['foo.js', 'bar.js']}}):
+        return {k: v['assets'] for (k, v) in entrypoint.items()}
 
-        return result
+
+    def _resolve_stats(self, stats):
+        entrypoints = stats.get('entrypoints', {'foo': {'assets': []}})
+
+        return map(self._transform_stats, entrypoints)
+
 
     def load_manifest(self, filename):
         manifest = load_json(filename)
@@ -132,16 +128,16 @@ class Environment(object):
         """
         # nodir = path.basename(spec)
         # noextension = path.splitext(nodir)[0]
-        # result = self._manifest.get(spec) \
-        #     or self._manifest.get(nodir) \
-        #     or self._manifest.get(noextension)
+        # results = [self._manifest.get(spec)] \
+        #     or [self._manifest.get(nodir)] \
+        #     or [self._manifest.get(noextension)]
         nodir = path.basename(spec)
         noextension = path.splitext(nodir)[0]
-        result = self._stats.get(spec) \
+        results = self._stats.get(spec) \
             or self._stats.get(nodir) \
             or self._stats.get(noextension)
-        if result:
-            return result
+        if results:
+            return results
         if self.settings.errorOnInvalidReference:
             raise AssetNotFoundException(spec)
 
