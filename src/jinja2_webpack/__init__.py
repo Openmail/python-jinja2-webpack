@@ -103,7 +103,7 @@ class Environment(object):
     def _resolve_stats(self, stats):
         entrypoints = stats.get('entrypoints', {'foo': {'assets': []}})
 
-        return map(self._transform_stats, entrypoints)
+        return dict(map(self._transform_stats, entrypoints))
 
 
     def load_manifest(self, filename):
