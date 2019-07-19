@@ -7,10 +7,12 @@ DEFAULT_SETTINGS = {
     'errorOnInvalidReference': True,
     'publicRoot': '/static/pack',
     'manifest': 'webpack-manifest.json',
+    'stats': '',
     'defaultRenderer': renderer.url,
     'useDefaultRenderByExt': False,  # this setting is mostly experimental
     'renderByExt': {
         '.js': renderer.script,
+        '.mjs': renderer.script_module,
         '.png': renderer.image,
         '.jpeg': renderer.image,
         '.jpg': renderer.image,
@@ -51,6 +53,8 @@ class Environment(object):
     Settings:
     * **manifest** - default ``webpack-manifest.json``.
     Path to the WebpackManifest file.
+    * **stats** - default ``stats.json``.
+    Path to the WebpackStats file.
     * **errorOnInvalidReference** - default ``True``.
     True if exception should be thrown when you try to resolve an invalid
     asset reference.
@@ -63,6 +67,10 @@ class Environment(object):
             self.load_manifest(self.settings.manifest)
         else:
             self._manifest = {}
+        if self.settings.stats:
+            self.load_stats(self.settings.stats)
+        else:
+            self._stats = {}
 
     def _resolve_asset(self, asset):
         if not self.settings.publicRoot:
@@ -88,9 +96,27 @@ class Environment(object):
 
         return result
 
+    def _resolve_stats(self, stats):
+        result = {}
+        # Resolve URLs in original stats items
+        for name, asset in stats.items():
+            result[name] = self._resolve_asset(asset)
+        # Strip out the extension as well, so if the webpack output
+        # file is "commons.js" we can use {{ "commons" | webpack }}
+        for name, asset in stats.items():
+            basename, ext = path.splitext(name)
+            if basename not in result:
+                result[basename] = result[name]
+
+        return result
+
     def load_manifest(self, filename):
         manifest = load_json(filename)
         self._manifest = self._resolve_manifest(manifest)
+
+    def load_stats(self, filename):
+        stats = load_json(filename)
+        self._stats = self._resolve_stats(stats)
 
     def identify_assetspec(self, spec):
         """ Lookup an asset from the webpack manifest.
@@ -104,11 +130,16 @@ class Environment(object):
         due to a limitation in the way that WebpackManifestPlugin writes
         the data.
         """
+        # nodir = path.basename(spec)
+        # noextension = path.splitext(nodir)[0]
+        # result = self._manifest.get(spec) \
+        #     or self._manifest.get(nodir) \
+        #     or self._manifest.get(noextension)
         nodir = path.basename(spec)
         noextension = path.splitext(nodir)[0]
-        result = self._manifest.get(spec) \
-            or self._manifest.get(nodir) \
-            or self._manifest.get(noextension)
+        result = self._stats.get(spec) \
+            or self._stats.get(nodir) \
+            or self._stats.get(noextension)
         if result:
             return result
         if self.settings.errorOnInvalidReference:
@@ -128,6 +159,13 @@ class Environment(object):
         by looking up the extension in the registered renderers """
         renderer = self._select_renderer(asset)
         return renderer(asset)
+
+    def render_assets(self, assets = []):
+        """ Render an array of assets to a URL or something more
+        interesting, by looking up the extension in the registered
+        renderers """
+        renderer = self._select_renderer(assets)
+        return '\n'.join(map(renderer, assets))
 
 
 __version__ = '0.2.0'
