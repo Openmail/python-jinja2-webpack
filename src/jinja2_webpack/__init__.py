@@ -97,12 +97,13 @@ class Environment(object):
         return result
 
     def _transform_stats(self, entrypoint):
-        print('_transform_stats: ', entrypoint)
+        print('_transform_stats: entrypoint: ', entrypoint)
         return {k: v['assets'] for (k, v) in entrypoint.items()}
 
 
     def _resolve_stats(self, stats):
-        entrypoints = stats.get('entrypoints', {'foo': {'assets': []}})
+        entrypoints = stats['entrypoints']
+        print('_resolve_stats: entrypoints: ', entrypoints)
 
         return dict(map(self._transform_stats, entrypoints))
 
