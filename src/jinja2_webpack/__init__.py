@@ -168,8 +168,7 @@ class Environment(object):
         """ Render an array of assets to a URL or something more
         interesting, by looking up the extension in the registered
         renderers """
-        renderer = self._select_renderer(assets)
-        return '\n'.join(map(renderer, assets))
+        return '\n'.join(map(self.render_asset, assets))
 
 
 __version__ = '0.2.0'
