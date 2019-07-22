@@ -12,7 +12,6 @@ DEFAULT_SETTINGS = {
     'useDefaultRenderByExt': False,  # this setting is mostly experimental
     'renderByExt': {
         '.js': renderer.script,
-        '.mjs': renderer.script_module,
         '.png': renderer.image,
         '.jpeg': renderer.image,
         '.jpg': renderer.image,
