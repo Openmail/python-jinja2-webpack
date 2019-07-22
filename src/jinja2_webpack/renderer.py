@@ -1,9 +1,5 @@
 def script(asset):
-    return '<script nomodule src="%s"></script>' % asset.url
-
-def script_module(asset):
-    return '<script type="module" src="%s"></script>' % asset.url
-
+    return '<script src="%s"></script>' % asset.url
 
 def image(asset):
     return '<img src="%s">' % asset.url
