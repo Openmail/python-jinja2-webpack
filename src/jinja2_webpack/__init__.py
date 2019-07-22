@@ -97,19 +97,12 @@ class Environment(object):
         return result
 
     def _transform_stats(self, entrypoint):
-        print('_transform_stats: entrypoint: ', entrypoint)
-        # entrypoint = {'chunks': [5], 'assets': ['autoversed.636eed0c.css', 'autoversed.9bf44627.bundle.js'], 'children': {}, 'childAssets': {}}
         return list(map(self._resolve_asset, entrypoint['assets']))
 
 
     def _resolve_stats(self, stats):
         entrypoints = stats['entrypoints']
         self.settings.publicRoot = stats['publicPath'] or self.settings.publicRoot
-
-        print('_resolve_stats: entrypoints: ', entrypoints)
-
-        #        {'autoversed': 'assets': { ['stuff.js', 'things.js'] } }
-        # return {'autoversed': ['stuff.js', 'things.js']}
 
         return {k: self._transform_stats(v) for (k, v) in entrypoints.items()}
 
@@ -121,7 +114,6 @@ class Environment(object):
     def load_stats(self, filename):
         stats = load_json(filename)
         self._stats = self._resolve_stats(stats)
-        print('load_stats: self._stats=', self._stats)
 
     def identify_assetspec(self, spec):
         """ Lookup an asset from the webpack manifest.
@@ -155,7 +147,6 @@ class Environment(object):
         self.settings.renderByExt[extension] = renderer
 
     def _select_renderer(self, asset):
-        print('_select_renderer: asset ', asset)
         _, ext = path.splitext(asset.filename)
         return self.settings.renderByExt.get(
              ext, self.settings.defaultRenderer)

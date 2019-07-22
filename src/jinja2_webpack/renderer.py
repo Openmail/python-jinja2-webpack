@@ -10,6 +10,7 @@ def image(asset):
 
 
 def stylesheet(asset):
+    print('--- stylesheet asset.url: ' + asset.url)
     return '<link rel="stylesheet" href="%s">' % asset.url
 
 
