@@ -96,7 +96,7 @@ class Environment(object):
 
         return result
 
-    def _transform_stats(self, entrypoint):
+    def _transform_stats(self, entrypoint, publicPath):
         print('_transform_stats: entrypoint: ', entrypoint)
         # entrypoint = {'chunks': [5], 'assets': ['autoversed.636eed0c.css', 'autoversed.9bf44627.bundle.js'], 'children': {}, 'childAssets': {}}
         return list(map(self._resolve_asset, entrypoint['assets']))
@@ -104,6 +104,8 @@ class Environment(object):
 
     def _resolve_stats(self, stats):
         entrypoints = stats['entrypoints']
+        self.settings.publicRoot = stats['publicPath'] or self.settings.publicRoot
+
         print('_resolve_stats: entrypoints: ', entrypoints)
 
         #        {'autoversed': 'assets': { ['stuff.js', 'things.js'] } }
