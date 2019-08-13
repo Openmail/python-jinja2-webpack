@@ -6,5 +6,9 @@ class WebpackFilter(object):
 
     def __call__(self, assetspec):
         assets = self.environment.identify_assetspec(assetspec)
-        if assets:
+
+        if isinstance(assets, list):
             return self.environment.render_assets(assets)
+
+        return self.environment.render_asset(assets)
+
