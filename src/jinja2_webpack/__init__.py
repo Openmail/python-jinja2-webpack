@@ -130,20 +130,22 @@ class Environment(object):
         # if not self._stats:
 
         # else:
-        #     nodir = path.basename(spec)
-        #     noextension = path.splitext(nodir)[0]
-        #     results = [self._manifest.get(spec)] \
-        #         or [self._manifest.get(nodir)] \
-        #         or [self._manifest.get(noextension)]
+        # if results:
+        #     return results
 
+        # nodir = path.basename(spec)
+        # noextension = path.splitext(nodir)[0]
+        # results = [self._stats.get(spec)] \
+        #     or [self._stats.get(nodir)] \
+        #     or [self._stats.get(noextension)\
         # if results:
         #     return results
 
         nodir = path.basename(spec)
         noextension = path.splitext(nodir)[0]
-        result = self._stats.get(spec) \
-            or self._stats.get(nodir) \
-            or self._stats.get(noextension)
+        result = self._manifest.get(spec) \
+            or self._manifest.get(nodir) \
+            or self._manifest.get(noextension)
         if result:
             return result
         if self.settings.errorOnInvalidReference:
