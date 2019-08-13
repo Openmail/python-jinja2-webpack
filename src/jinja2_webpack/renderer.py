@@ -1,6 +1,7 @@
 def script(asset):
     return '<script src="%s"></script>' % asset.url
 
+
 def image(asset):
     return '<img src="%s">' % asset.url
 
