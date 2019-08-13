@@ -7,7 +7,7 @@ DEFAULT_SETTINGS = {
     'errorOnInvalidReference': True,
     'publicRoot': '/static/pack',
     'manifest': 'webpack-manifest.json',
-    'stats': '',
+    'stats': False,
     'defaultRenderer': renderer.url,
     'useDefaultRenderByExt': False,  # this setting is mostly experimental
     'renderByExt': {
@@ -126,16 +126,20 @@ class Environment(object):
         due to a limitation in the way that WebpackManifestPlugin writes
         the data.
         """
-        # nodir = path.basename(spec)
-        # noextension = path.splitext(nodir)[0]
-        # results = [self._manifest.get(spec)] \
-        #     or [self._manifest.get(nodir)] \
-        #     or [self._manifest.get(noextension)]
-        nodir = path.basename(spec)
-        noextension = path.splitext(nodir)[0]
-        results = self._stats.get(spec) \
-            or self._stats.get(nodir) \
-            or self._stats.get(noextension)
+
+        if self._stats:
+            nodir = path.basename(spec)
+            noextension = path.splitext(nodir)[0]
+            results = self._stats.get(spec) \
+                or self._stats.get(nodir) \
+                or self._stats.get(noextension)
+        else:
+            nodir = path.basename(spec)
+            noextension = path.splitext(nodir)[0]
+            results = [self._manifest.get(spec)] \
+                or [self._manifest.get(nodir)] \
+                or [self._manifest.get(noextension)]
+
         if results:
             return results
         if self.settings.errorOnInvalidReference:
