@@ -10,7 +10,6 @@ class WebpackFilter(object):
         if isinstance(assets, list):
             return self.environment.render_assets(assets)
 
-        print(assets)
-
-        return self.environment.render_asset(assets)
+        if assets:
+            return self.environment.render_asset(assets)
 
