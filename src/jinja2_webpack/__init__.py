@@ -7,7 +7,7 @@ DEFAULT_SETTINGS = {
     'errorOnInvalidReference': True,
     'publicRoot': '/static/pack',
     'manifest': 'webpack-manifest.json',
-    'stats': False,
+    'stats': None,
     'defaultRenderer': renderer.url,
     'useDefaultRenderByExt': False,  # this setting is mostly experimental
     'renderByExt': {
@@ -105,14 +105,13 @@ class Environment(object):
 
         return {k: self._transform_stats(v) for (k, v) in entrypoints.items()}
 
+    def load_stats(self, filename):
+        stats = load_json(filename)
+        self._stats = self._resolve_stats(stats)
 
     def load_manifest(self, filename):
         manifest = load_json(filename)
         self._manifest = self._resolve_manifest(manifest)
-
-    def load_stats(self, filename):
-        stats = load_json(filename)
-        self._stats = self._resolve_stats(stats)
 
     def identify_assetspec(self, spec):
         """ Lookup an asset from the webpack manifest.
@@ -127,23 +126,21 @@ class Environment(object):
         the data.
         """
 
-        if self._manifest:
-            nodir = path.basename(spec)
-            noextension = path.splitext(nodir)[0]
-            result = (self._manifest.get(spec)
-                or self._manifest.get(nodir)
-                or self._manifest.get(noextension))
-            if result:
-                return result
+        nodir = path.basename(spec)
+        noextension = path.splitext(nodir)[0]
 
         if self._stats:
-            nodir = path.basename(spec)
-            noextension = path.splitext(nodir)[0]
             results = ([self._stats.get(spec)]
                 or [self._stats.get(nodir)]
                 or [self._stats.get(noextension)])
             if results:
                 return results
+
+        result = (self._manifest.get(spec)
+            or self._manifest.get(nodir)
+            or self._manifest.get(noextension))
+        if result:
+            return result
 
         if self.settings.errorOnInvalidReference:
             raise AssetNotFoundException(spec)
