@@ -130,18 +130,18 @@ class Environment(object):
         if self._manifest:
             nodir = path.basename(spec)
             noextension = path.splitext(nodir)[0]
-            result = self._manifest.get(spec) \
-                or self._manifest.get(nodir) \
-                or self._manifest.get(noextension)
+            result = (self._manifest.get(spec)
+                or self._manifest.get(nodir)
+                or self._manifest.get(noextension))
             if result:
                 return result
 
         if self._stats:
             nodir = path.basename(spec)
             noextension = path.splitext(nodir)[0]
-            results = [self._stats.get(spec)] \
-                or [self._stats.get(nodir)] \
-                or [self._stats.get(noextension)\
+            results = ([self._stats.get(spec)]
+                or [self._stats.get(nodir)]
+                or [self._stats.get(noextension)])
             if results:
                 return results
 
