@@ -12,4 +12,3 @@ class WebpackFilter(object):
 
         if assets:
             return self.environment.render_asset(assets)
-

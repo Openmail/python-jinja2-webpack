@@ -98,10 +98,11 @@ class Environment(object):
     def _transform_stats(self, entrypoint):
         return list(map(self._resolve_asset, entrypoint['assets']))
 
-
     def _resolve_stats(self, stats):
         entrypoints = stats['entrypoints']
-        self.settings.publicRoot = stats['publicPath'] or self.settings.publicRoot
+        self.settings.publicRoot = (
+            stats['publicPath'] or self.settings.publicRoot
+        )
 
         return {k: self._transform_stats(v) for (k, v) in entrypoints.items()}
 
@@ -130,14 +131,14 @@ class Environment(object):
 
         if self._stats:
             results = ([self._stats.get(spec)]
-                or [self._stats.get(nodir)]
-                or [self._stats.get(noextension)])
+                       or [self._stats.get(nodir)]
+                       or [self._stats.get(noextension)])
             if results:
                 return results
 
         result = (self._manifest.get(spec)
-            or self._manifest.get(nodir)
-            or self._manifest.get(noextension))
+                  or self._manifest.get(nodir)
+                  or self._manifest.get(noextension))
         if result:
             return result
         if self.settings.errorOnInvalidReference:
@@ -158,7 +159,7 @@ class Environment(object):
         renderer = self._select_renderer(asset)
         return renderer(asset)
 
-    def render_assets(self, assets = []):
+    def render_assets(self, assets=[]):
         """ Render an array of assets to a URL or something more
         interesting, by looking up the extension in the registered
         renderers """
