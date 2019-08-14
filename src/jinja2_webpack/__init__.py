@@ -125,7 +125,6 @@ class Environment(object):
         due to a limitation in the way that WebpackManifestPlugin writes
         the data.
         """
-
         nodir = path.basename(spec)
         noextension = path.splitext(nodir)[0]
 
@@ -141,7 +140,6 @@ class Environment(object):
             or self._manifest.get(noextension))
         if result:
             return result
-
         if self.settings.errorOnInvalidReference:
             raise AssetNotFoundException(spec)
 
