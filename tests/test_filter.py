@@ -32,3 +32,39 @@ def test_invalid_error():
     f = WebpackFilter(env)
     with pytest.raises(AssetNotFoundException):
         f('a')
+
+
+def test_stats_lookup():
+    foo = {
+        'errors': [],
+        'warnings': [],
+        'publicPath': 'https://cdn.now.howstuffworks.localhost:8080/content-site/assets/quiz/',
+        'entrypoints': {
+            'autoversed': {
+                'chunks': [
+                    'autoversed'
+                ],
+                'assets': [
+                    'autoversed.fa5bb195.js'
+                ],
+                'children': {},
+                'childAssets': {}
+            },
+            'goliath': {
+                'chunks': [
+                    'goliath'
+                ],
+                'assets': [
+                    'goliath.bab312ea.js',
+                    'goliathMoreStuff.bab312ea.js'
+                ],
+                'children': {},
+                'childAssets': {}
+            }
+        }
+    }
+
+    env = Environment(stats=foo, manifest=None)
+    f = WebpackFilter(env)
+    assert f
+    assert f('autoversed') == 'https://cdn.now.howstuffworks.localhost:8080/content-site/assets/quiz/autoversed.fa5bb195.js'

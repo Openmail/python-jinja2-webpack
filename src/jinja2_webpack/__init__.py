@@ -3,6 +3,9 @@ from os import path
 from . import renderer
 from .utils import load_json
 
+import logging
+
+
 DEFAULT_SETTINGS = {
     'errorOnInvalidReference': True,
     'publicRoot': '/static/pack',
@@ -130,9 +133,9 @@ class Environment(object):
         noextension = path.splitext(nodir)[0]
 
         if self._stats:
-            results = ([self._stats.get(spec)]
-                       or [self._stats.get(nodir)]
-                       or [self._stats.get(noextension)])
+            results = (self._stats.get(spec)
+                       or self._stats.get(nodir)
+                       or self._stats.get(noextension))
             if results:
                 return results
 
@@ -149,6 +152,7 @@ class Environment(object):
         self.settings.renderByExt[extension] = renderer
 
     def _select_renderer(self, asset):
+        logging.debug('--------------- Asset %s', asset)
         _, ext = path.splitext(asset.filename)
         return self.settings.renderByExt.get(
              ext, self.settings.defaultRenderer)
@@ -156,6 +160,8 @@ class Environment(object):
     def render_asset(self, asset):
         """ Render an asset to a URL or something more interesting,
         by looking up the extension in the registered renderers """
+        # print('----- asset: ' + asset)
+        logging.debug('---------------  (render_asset) Asset %s', asset)
         renderer = self._select_renderer(asset)
         return renderer(asset)
 
@@ -163,6 +169,7 @@ class Environment(object):
         """ Render an array of assets to a URL or something more
         interesting, by looking up the extension in the registered
         renderers """
+        logging.debug('---------------  (  render_assets) Asset %s', assets)
         return '\n'.join(map(self.render_asset, assets))
 
 
