@@ -35,28 +35,26 @@ def test_invalid_error():
 
 
 def test_stats_lookup():
-    foo = {
-        'errors': [],
-        'warnings': [],
-        'publicPath': 'https://cdn.now.howstuffworks.localhost:8080/content-site/assets/quiz/',
+    stats = {
+        'publicPath': 'https://cdn.foo.com/',
         'entrypoints': {
-            'autoversed': {
+            'a': {
                 'chunks': [
-                    'autoversed'
+                    'a-chunk'
                 ],
                 'assets': [
-                    'autoversed.fa5bb195.js'
+                    'a-asset-1.js'
                 ],
                 'children': {},
                 'childAssets': {}
             },
-            'goliath': {
+            'b': {
                 'chunks': [
-                    'goliath'
+                    'b-chunk'
                 ],
                 'assets': [
-                    'goliath.bab312ea.js',
-                    'goliathMoreStuff.bab312ea.js'
+                    'b-asset-1.js',
+                    'b-asset-2.js'
                 ],
                 'children': {},
                 'childAssets': {}
@@ -64,7 +62,9 @@ def test_stats_lookup():
         }
     }
 
-    env = Environment(stats=foo, manifest=None)
+    env = Environment(stats=stats, manifest=None)
     f = WebpackFilter(env)
     assert f
-    assert f('autoversed') == 'https://cdn.now.howstuffworks.localhost:8080/content-site/assets/quiz/autoversed.fa5bb195.js'
+    assert f('a') == 'https://cdn.foo.com/a-asset-1.js'
+    assert f('b') == 'https://cdn.foo.com/b-asset-1.js\nhttps://cdn.foo.com/b-asset-2.js'
+
