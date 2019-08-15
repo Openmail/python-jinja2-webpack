@@ -30,6 +30,7 @@ stats = {
     }
 }
 
+
 def test_filter_defined():
     assert WebpackFilter
 
@@ -68,6 +69,7 @@ def test_stats_lookup():
     assert f('b') == (
         'https://cdn.foo.com/b-asset-1.js\nhttps://cdn.foo.com/b-asset-2.js'
     )
+
 
 def test_invalid_stats_error():
     env = Environment(stats=stats, errorOnInvalidReference=True)
