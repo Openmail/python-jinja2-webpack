@@ -67,5 +67,5 @@ def test_stats_lookup():
     assert f
     assert f('a') == 'https://cdn.foo.com/a-asset-1.js'
     assert f('b') == (
-    'https://cdn.foo.com/b-asset-1.js\nhttps://cdn.foo.com/b-asset-2.js'
+        'https://cdn.foo.com/b-asset-1.js\nhttps://cdn.foo.com/b-asset-2.js'
     )

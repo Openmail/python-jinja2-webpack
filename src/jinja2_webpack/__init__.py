@@ -1,10 +1,8 @@
+import logging
 from os import path
 
 from . import renderer
 from .utils import load_json
-
-import logging
-
 
 DEFAULT_SETTINGS = {
     'errorOnInvalidReference': True,
