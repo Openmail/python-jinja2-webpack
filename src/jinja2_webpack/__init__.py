@@ -135,6 +135,8 @@ class Environment(object):
                        or self._stats.get(noextension))
             if results:
                 return results
+            else if self.settings.errorOnInvalidReference:
+                raise AssetNotFoundException(spec)
 
         result = (self._manifest.get(spec)
                   or self._manifest.get(nodir)

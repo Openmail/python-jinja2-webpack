@@ -3,6 +3,32 @@ import pytest
 from jinja2_webpack import AssetNotFoundException, Environment
 from jinja2_webpack.filter import WebpackFilter
 
+stats = {
+    'publicPath': 'https://cdn.foo.com/',
+    'entrypoints': {
+        'a': {
+            'chunks': [
+                'a-chunk'
+            ],
+            'assets': [
+                'a-asset-1.js'
+            ],
+            'children': {},
+            'childAssets': {}
+        },
+        'b': {
+            'chunks': [
+                'b-chunk'
+            ],
+            'assets': [
+                'b-asset-1.js',
+                'b-asset-2.js'
+            ],
+            'children': {},
+            'childAssets': {}
+        }
+    }
+}
 
 def test_filter_defined():
     assert WebpackFilter
@@ -35,33 +61,6 @@ def test_invalid_error():
 
 
 def test_stats_lookup():
-    stats = {
-        'publicPath': 'https://cdn.foo.com/',
-        'entrypoints': {
-            'a': {
-                'chunks': [
-                    'a-chunk'
-                ],
-                'assets': [
-                    'a-asset-1.js'
-                ],
-                'children': {},
-                'childAssets': {}
-            },
-            'b': {
-                'chunks': [
-                    'b-chunk'
-                ],
-                'assets': [
-                    'b-asset-1.js',
-                    'b-asset-2.js'
-                ],
-                'children': {},
-                'childAssets': {}
-            }
-        }
-    }
-
     env = Environment(stats=stats, manifest=None)
     f = WebpackFilter(env)
     assert f
@@ -69,3 +68,9 @@ def test_stats_lookup():
     assert f('b') == (
         'https://cdn.foo.com/b-asset-1.js\nhttps://cdn.foo.com/b-asset-2.js'
     )
+
+def test_invalid_stats_error():
+    env = Environment(stats=stats, errorOnInvalidReference=True)
+    f = WebpackFilter(env)
+    with pytest.raises(AssetNotFoundException):
+        f('z')
