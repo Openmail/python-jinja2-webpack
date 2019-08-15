@@ -62,7 +62,7 @@ class Environment(object):
     """
     def __init__(self, **kwargs):
         self.settings = EnvironmentSettings(**kwargs)
-        if self.settings.manifest:
+        if self.settings.manifest and not self.settings.stats:
             self.load_manifest(self.settings.manifest)
         else:
             self._manifest = {}
@@ -135,7 +135,7 @@ class Environment(object):
                        or self._stats.get(noextension))
             if results:
                 return results
-            else if self.settings.errorOnInvalidReference:
+            elif self.settings.errorOnInvalidReference:
                 raise AssetNotFoundException(spec)
 
         result = (self._manifest.get(spec)
